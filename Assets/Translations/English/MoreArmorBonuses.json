@@ -1,3 +1,33 @@
 ﻿{
+  "MoreArmorBonuses_Rag_set_name" : "Ragged Dream",
+  "MoreArmorBonuses_Rag_effect" : "Ragged Dream",
+  "MoreArmorBonuses_Rag_tooltip" : "The rags of your armor give you a slight boost.",
+
+  "MoreArmorBonuses_Leather_set_name" : "Swift Leather",
+  "MoreArmorBonuses_Leather_effect" : "Swift Leather",
+  "MoreArmorBonuses_Leather_tooltip" : "Your leather armor is light and gives you the ability to move faster.",
   
+  "MoreArmorBonuses_Bronze_set_name" : "Sturdy Bronze",
+  "MoreArmorBonuses_Bronze_effect" : "Sturdy Bronze",
+  "MoreArmorBonuses_Bronze_tooltip" : "Your armor is made of the sturdiest bronze and gives you boosts in return.",
+  
+  "MoreArmorBonuses_Iron_set_name" : "Flashing Iron",
+  "MoreArmorBonuses_Iron_effect" : "Flashing Iron",
+  "MoreArmorBonuses_Iron_tooltip" : "Attacks are reflected by your flashing iron armor.",
+  
+  "MoreArmorBonuses_Wolf_set_name" : "Softest Wolf",
+  "MoreArmorBonuses_Wolf_effect" : "Softest Wolf",
+  "MoreArmorBonuses_Wolf_tooltip" : "Your armor gives your the resilience of a wolf.",
+  
+  "MoreArmorBonuses_Padded_set_name" : "Strong Padded",
+  "MoreArmorBonuses_Padded_effect" : "Strong Padded",
+  "MoreArmorBonuses_Padded_tooltip" : "This armor is made of sturdy padded material, providing protection and resilience.",
+  
+  "MoreArmorBonuses_Carapace_set_name" : "Tough Carapace",
+  "MoreArmorBonuses_Carapace_effect" : "Tough carapace",
+  "MoreArmorBonuses_Carapace_tooltip" : "The Seeker's carapace gives you a boost in health and armor.",
+  
+  "MoreArmorBonuses_Flametal_set_name" : "Shining Flametal",
+  "MoreArmorBonuses_Flametal_effect" : "Shining Flametal",
+  "MoreArmorBonuses_Flametal_tooltip" : "Your armor is made of the most powerful flametal, providing unparalleled protection and resilience."
 }

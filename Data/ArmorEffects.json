@@ -1,0 +1,86 @@
+﻿[
+  {
+    "SetBonusName": "MoreArmorBonuses_Rag",
+    "SetSize": 2,
+    "DefenseBonus": 2,
+    "PrefabNames": ["ArmorRagsChest", "ArmorRagsLegs"],
+    "IconPrefabName": "ArmorRagsChest"
+  },
+  {
+    "SetBonusName": "MoreArmorBonuses_Leather",
+    "SetSize": 3,
+    "DefenseBonus": 4,
+    "MovementSpeedBonus": 0.1,
+    "PrefabNames": ["HelmetLeather", "ArmorLeatherChest", "ArmorLeatherLegs"],
+    "IconPrefabName": "HelmetLeather"
+  },
+  {
+    "SetBonusName": "MoreArmorBonuses_Bronze",
+    "SetSize": 3,
+    "DefenseBonus": 6,
+    "DamageReduction": 0.02,
+    "MeleeDamageBonus": 0.04,
+    "HealthRegenerationBonus": 1.04,
+    "CarryWeightBonus": 25,
+    "PrefabNames": ["HelmetBronze", "ArmorBronzeChest", "ArmorBronzeLegs"],
+    "IconPrefabName": "HelmetBronze"
+  },
+  {
+    "SetBonusName": "MoreArmorBonuses_Iron",
+    "SetSize": 3,
+    "DefenseBonus": 10,
+    "DamageReduction": 0.12,
+    "MeleeDamageBonus": 0.06,
+    "PoisonDamageReduction": 7,
+    "CarryWeightBonus": 50,
+    "PrefabNames": ["HelmetIron", "ArmorIronChest", "ArmorIronLegs"],
+    "IconPrefabName": "HelmetIron"
+  },
+  {
+    "SetBonusName": "MoreArmorBonuses_Wolf",
+    "SetSize": 3,
+    "DefenseBonus": 10,
+    "DamageReduction": 0.06,
+    "MeleeDamageBonus": 0.12,
+    "FrostDamageReduction": 7,
+    "CarryWeightBonus": 75,
+    "PrefabNames": ["HelmetDrake", "ArmorWolfChest", "ArmorWolfLegs"],
+    "IconPrefabName": "HelmetDrake"
+  },
+  {
+    "SetBonusName": "MoreArmorBonuses_Padded",
+    "SetSize": 3,
+    "DefenseBonus": 15,
+    "DamageReduction": 0.13,
+    "MeleeDamageBonus": 0.08,
+    "FireDamageReduction": 7,
+    "PoisonDamageReduction": 7,
+    "CarryWeightBonus": 100,
+    "PrefabNames": ["HelmetPadded", "ArmorPaddedCuirass", "ArmorPaddedGreaves"],
+    "IconPrefabName": "HelmetPadded"
+  },
+  {
+    "SetBonusName": "MoreArmorBonuses_Carapace",
+    "SetSize": 3,
+    "DefenseBonus": 20,
+    "DamageReduction": 0.12,
+    "MeleeDamageBonus": 0.1,
+    "HealthRegenerationBonus": 1.08,
+    "PoisonDamageReduction": 1,
+    "CarryWeightBonus": 125,
+    "PrefabNames": ["HelmetCarapace", "ArmorCarapaceChest", "ArmorCarapaceLegs"],
+    "IconPrefabName": "HelmetCarapace"
+  },
+  {
+    "SetBonusName": "MoreArmorBonuses_Flametal",
+    "SetSize": 3,
+    "DefenseBonus": 25,
+    "DamageReduction": 0.15,
+    "MeleeDamageBonus": 0.15,
+    "FireDamageReduction": 1,
+    "HealthRegenerationBonus": 1.1,
+    "CarryWeightBonus": 200,
+    "PrefabNames": ["HelmetFlametal", "ArmorFlametalChest", "ArmorFlametalLegs"],
+    "IconPrefabName": "HelmetFlametal"
+  }
+]

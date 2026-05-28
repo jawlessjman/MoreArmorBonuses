@@ -46,16 +46,30 @@
     <Reference Include="Jotunn">
       <HintPath>D:\SteamLibrary\steamapps\common\Valheim\BepInEx\plugins\Jotunn.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>D:\SteamLibrary\steamapps\common\Valheim\BepInEx\plugins\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="ServerSync">
       <HintPath>libs\ServerSync.dll</HintPath>
       <Private>true</Private>
     </Reference>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Remove="Assets\Translations\English\MoreArmorBonuses.json" />
+    <EmbeddedResource Include="Assets\Translations\English\MoreArmorBonuses.json" />
+    <None Remove="Data\ArmorEffects.json" />
+    <EmbeddedResource Include="Data\ArmorEffects.json" />
   </ItemGroup>
 
   <Target Name="ILRepacker" AfterTargets="Build">
     <ItemGroup>
       <InputAssemblies Include="$(TargetPath)" />
       <InputAssemblies Include="$(OutputPath)\ServerSync.dll" />
+    </ItemGroup>
+    <ItemGroup>
+      <InputAssemblies Include="$(TargetPath)" />
+      <InputAssemblies Include="$(OutputPath)\Newtonsoft.Json.dll" />
     </ItemGroup>
 
     <ILRepack Parallel="true" DebugInfo="true" InputAssemblies="@(InputAssemblies)" OutputFile="$(TargetPath)" TargetKind="SameAsPrimaryAssembly" LibraryPath="$(OutputPath)" Internalize="true" />

@@ -1,61 +1,96 @@
 ﻿using Jotunn.Entities;
+using Jotunn.Utils;
 using UnityEngine;
+using Newtonsoft.Json;
 
 namespace MoreArmorBonuses.Data;
 
+/// <summary>
+/// Class responsible for creating armour bonuses.
+/// </summary>
 public static class CreateArmorBonuses
 {
+    /// <summary>
+    /// Whether the armour bonuses have been initialised.
+    /// </summary>
     private static bool _initialized;
-    private static readonly string[][] ArmorSetNames = new string[][]
-    {
-        ["ArmorRagsChest", "ArmorRagsLegs"],
-        ["HelmetLeather", "ArmorLeatherChest", "ArmorLeatherLegs"],
-        ["HelmetBronze", "ArmorBronzeChest", "ArmorBronzeLegs"],
-        //["HelmetRoot", "ArmorRootChest", "ArmorRootLegs"],
-        ["HelmetIron", "ArmorIronChest", "ArmorIronLegs"],
-        ["HelmetDrake", "ArmorWolfChest", "ArmorWolfLegs"],
-        ["HelmetPadded", "ArmorPaddedCuirass", "ArmorPaddedGreaves"],
-        //["HelmetMage", "ArmorMageChest", "ArmorMageLegs"],
-        ["HelmetCarapace", "ArmorCarapaceChest", "ArmorCarapaceLegs"],
-        //["HelmetMage_Ashlands", "ArmorMageChest_Ashlands", "ArmorMageLegs_Ashlands"],
-        ["HelmetFlametal", "ArmorFlametalChest", "ArmorFlametalLegs"]
-    };
-
-    private static readonly BonusEffect[] ArmorBonuses =
-    [
-        new() {SetBonusName = "MoreArmorBonuses_Rag", SetSize = 2, DefenseBonus = 2},
-        new() {SetBonusName = "MoreArmorBonuses_Leather", SetSize = 3, DefenseBonus = 4, MovementSpeedBonus = 0.1f},
-        new() {SetBonusName = "MoreArmorBonuses_Bronze", SetSize = 3, DefenseBonus = 6, DamageReduction = 0.02f, MeleeDamageBonus = 0.04f, HealthRegenerationBonus = 1.04f, CarryWeightBonus = 25},
-        new() {SetBonusName = "MoreArmorBonuses_Iron", SetSize = 3, DefenseBonus = 10, DamageReduction = 0.12f, MeleeDamageBonus = 0.06f, PoisonDamageReduction = HitData.DamageModifier.SlightlyResistant, CarryWeightBonus = 50},
-        new() {SetBonusName = "MoreArmorBonuses_Wolf", SetSize = 3, DefenseBonus = 10, DamageReduction = 0.06f, MeleeDamageBonus = 0.12f, FrostDamageReduction = HitData.DamageModifier.SlightlyResistant, CarryWeightBonus = 75},
-        new () {SetBonusName = "MoreArmorBonuses_Padded", SetSize = 3, DefenseBonus = 15, DamageReduction = 0.13f, MeleeDamageBonus = 0.08f, FireDamageReduction = HitData.DamageModifier.SlightlyResistant, PoisonDamageReduction = HitData.DamageModifier.SlightlyResistant, CarryWeightBonus = 100},
-        new () {SetBonusName = "MoreArmorBonuses_Carapace", SetSize = 3, DefenseBonus = 20, DamageReduction = 0.12f, MeleeDamageBonus = 0.1f, HealthRegenerationBonus = 1.08f, PoisonDamageReduction = HitData.DamageModifier.Resistant, CarryWeightBonus = 125, EitrBonus = 50},
-        new () {SetBonusName = "MoreArmorBonuses_Flametal", SetSize = 3, DefenseBonus = 25, DamageReduction = 0.15f, MeleeDamageBonus = 0.15f, FireDamageReduction = HitData.DamageModifier.Resistant, HealthRegenerationBonus = 1.1f, CarryWeightBonus = 200, EitrBonus = 75}
+    
+    /// <summary>
+    /// Armour bonuses to override.
+    /// </summary>
+    public static BonusEffect[] OverrideArmorEffects = [];
+    
+    /// <summary>
+    /// Armour that already has effects.
+    /// </summary>
+    private static readonly string[] ArmorThatAlreadyHasEffects = [
+        "HelmetTrollLeather", "ArmorTrollLeatherChest", "ArmorTrollLeatherLegs",
+        "HelmetBerserkerHood", "ArmorBerserkerChest", "ArmorBerserkerLegs",
+        "HelmetRoot", "ArmorRootChest", "ArmorRootLegs",
+        "HelmetFenring", "ArmorFenringChest", "ArmorFenringLegs",
+        "HelmetBerserkerUndead", "ArmorBerserkerUndeadChest", "ArmorBerserkerUndeadLegs",
+        "HelmetMage", "ArmorMageChest", "ArmorMageLegs",
+        "HelmetAshlandsMediumHood", "ArmorAshlandsMediumChest", "ArmorAshlandsMediumLegs",
+        "HelmetMage_Ashlands", "ArmorMageChest_Ashlands", "ArmorMageLegs_Ashlands"
     ];
 
+    /// <summary>
+    /// Initialises the armour bonuses.
+    /// </summary>
     public static void Initialize()
     {
-        if (_initialized) return;
+        if (_initialized) return; // If already initialised, return
 
-        if (ArmorBonuses.Length != ArmorSetNames.Length)
+        if (OverrideArmorEffects.Length == 0) // If no override stats, load from JSON
         {
-            Plugin.Logger.LogWarning("Armor bonuses and set names array lengths do not match. Skipping initialization.");
-            return;
+            const string resourceName = "MoreArmorBonuses.Data.ArmorEffects.json";
+            var jsonString = AssetUtils.LoadTextFromResources(resourceName);
+            if (string.IsNullOrEmpty(jsonString))
+            {
+                Plugin.Logger.LogWarning($"Failed to load armor effects JSON from resource: {resourceName}");
+                return;
+            }
+
+            var data = JsonConvert.DeserializeObject<BonusEffect[]>(jsonString);
+            if (data == null || data.Length == 0)
+            {
+                Plugin.Logger.LogWarning($"Failed to deserialize armor effects JSON from resource: {resourceName}");
+                return;
+            }
+
+            foreach (var bonusEffect in data)
+            {
+                CreateArmorBonus(bonusEffect);
+            }
+        }
+        else // If override stats, use them
+        {
+            foreach (var bonusEffect in OverrideArmorEffects)
+            {
+                CreateArmorBonus(bonusEffect);
+            }
         }
 
-        for (var i = 0; i < ArmorBonuses.Length; i++)
-        {
-            CreateArmorBonus(ArmorSetNames[i], ArmorBonuses[i]);
-        }
-        
         _initialized = true;
     }
 
-    private static void CreateArmorBonus(string[] prefabNames, BonusEffect effectInfo)
+    /// <summary>
+    /// Creates an armour bonus for the given effect.
+    /// </summary>
+    /// <param name="effectInfo">The bonus effect information.</param>
+    private static void CreateArmorBonus(BonusEffect effectInfo)
     {
-        var effect= CreateArmorEffect(effectInfo);
+        if (effectInfo == null)
+        {
+            Plugin.Logger.LogWarning("BonusEffect is null, skipping armor bonus creation.");
+            return;
+        }
+        
+        // Get the icon sprite for the status effect
+        var icon = ObjectDB.instance.GetItemPrefab(effectInfo.IconPrefabName).GetComponent<ItemDrop>().m_itemData.GetIcon() ?? Hud.instance.m_buildSnappingIcon;
+        var effect = CreateArmorEffect(effectInfo, icon);
 
-        foreach (var prefabName in prefabNames)
+        foreach (var prefabName in effectInfo.PrefabNames)
         {
             var prefab = ObjectDB.instance.GetItemPrefab(prefabName);
             if (prefab == null) continue;
@@ -63,47 +98,79 @@ public static class CreateArmorBonuses
             var itemDrop = prefab.GetComponent<ItemDrop>();
             if (itemDrop == null) continue;
             
-            itemDrop.m_itemData.m_shared.m_setName = effectInfo.SetBonusName;
+            // Set the status effect on the items
+            itemDrop.m_itemData.m_shared.m_setName = $"${effectInfo.SetBonusName}_set_name";
             itemDrop.m_itemData.m_shared.m_setSize = effectInfo.SetSize;
             itemDrop.m_itemData.m_shared.m_setStatusEffect = effect.StatusEffect;
         }
     }
 
-    private static CustomStatusEffect CreateArmorEffect(BonusEffect effectInfo)
+    /// <summary>
+    /// Creates a custom status effect for the given armour bonus.
+    /// </summary>
+    /// <param name="effectInfo">The bonus effect information.</param>
+    /// <param name="icon">The icon sprite for the status effect.</param>
+    /// <returns>The created custom status effect.</returns>
+    private static CustomStatusEffect CreateArmorEffect(BonusEffect effectInfo, Sprite icon)
     {
         var effect = ScriptableObject.CreateInstance<SE_CustomSetBonus>();
 
+        // Base Effect
         effect.name = $"SE_{effectInfo.SetBonusName}";
         effect.m_name = $"${effectInfo.SetBonusName}_effect";
-        effect.m_startMessage = $"${effectInfo.SetBonusName}_start";
-        effect.m_startMessageType = MessageHud.MessageType.Center;
-        effect.m_stopMessage = $"${effectInfo.SetBonusName}_stop";
-        effect.m_stopMessageType = MessageHud.MessageType.Center;
         effect.m_tooltip = $"${effectInfo.SetBonusName}_tooltip";
-        effect.m_icon = Hud.instance.m_buildSnappingIcon; // TODO: Add custom icons
+        effect.m_icon = icon;
         effect.m_ttl = 0f;
         effect.m_flashIcon = false;
         effect.m_cooldownIcon = false;
-        effect.m_damageReduction = effectInfo.DamageReduction;
         
-        effect.m_addArmor= effectInfo.DefenseBonus; // Might need to change
-        effect.m_speedModifier = effectInfo.MovementSpeedBonus; // Good
-        effect.m_eitrUpFront = effectInfo.EitrBonus; // Might need to change
-        effect.m_healthRegenMultiplier = effectInfo.HealthRegenerationBonus; // Good
-        effect.m_percentigeDamageModifiers = new HitData.DamageTypes() // Good
+        // Movement Related
+        effect.m_speedModifier = effectInfo.MovementSpeedBonus;
+        
+        // Health Related
+        effect.m_healthRegenMultiplier = effectInfo.HealthRegenerationBonus;
+        effect.m_eitrRegenMultiplier = effectInfo.EitrRegenerationBonus;
+        
+        // Stamina Related
+        effect.m_staminaRegenMultiplier = effectInfo.StaminaRegenModifier;
+        effect.m_attackStaminaUseModifier = effectInfo.AttackStaminaModifier;
+        effect.m_blockStaminaUseModifier = effectInfo.BlockStaminaModifier;
+        effect.m_runStaminaUseModifier = effectInfo.RunStaminaModifier;
+        effect.m_swimStaminaUseModifier = effectInfo.SwimStaminaModifier;
+        effect.m_dodgeStaminaUseModifier = effectInfo.DodgeStaminaModifier;
+        effect.m_jumpStaminaUseModifier = effectInfo.JumpStaminaModifier;
+        effect.m_sneakStaminaUseModifier = effectInfo.SneakStaminaModifier;
+        
+        // Damage Related
+        effect.m_percentigeDamageModifiers = new HitData.DamageTypes()
         {
-            m_pierce = effectInfo.PierceDamageBonus + effectInfo.MeleeDamageBonus,
-            m_chop = effectInfo.MeleeDamageBonus,
+            m_pierce = effectInfo.MeleeDamageBonus,
             m_slash = effectInfo.MeleeDamageBonus,
             m_blunt = effectInfo.MeleeDamageBonus,
-            m_pickaxe = effectInfo.MeleeDamageBonus,
+            m_fire = effectInfo.MagicDamageBonus,
+            m_poison = effectInfo.MagicDamageBonus,
+            m_lightning = effectInfo.MagicDamageBonus,
+            m_frost = effectInfo.MagicDamageBonus,
         };
-        effect.m_addMaxCarryWeight = effectInfo.CarryWeightBonus; // Good
+        
+        // Defense Related
+        effect.m_damageReduction = effectInfo.DamageReduction;
+        effect.m_addArmor= effectInfo.DefenseBonus;
         effect.m_mods = [
             new HitData.DamageModPair(){m_modifier = effectInfo.FireDamageReduction, m_type = HitData.DamageType.Fire},
             new HitData.DamageModPair(){m_modifier = effectInfo.PoisonDamageReduction, m_type = HitData.DamageType.Poison},
             new HitData.DamageModPair(){m_modifier = effectInfo.FrostDamageReduction, m_type = HitData.DamageType.Frost},
+            new HitData.DamageModPair(){m_modifier = effectInfo.LightningDamageReduction, m_type = HitData.DamageType.Lightning},
+            new HitData.DamageModPair(){m_modifier = effectInfo.SlashDamageReduction, m_type = HitData.DamageType.Slash},
+            new HitData.DamageModPair(){m_modifier = effectInfo.PickaxeDamageReduction, m_type = HitData.DamageType.Pickaxe},
+            new HitData.DamageModPair(){m_modifier = effectInfo.SpiritDamageReduction, m_type = HitData.DamageType.Spirit},
+            new HitData.DamageModPair(){m_modifier = effectInfo.BluntDamageReduction, m_type = HitData.DamageType.Blunt},
+            new HitData.DamageModPair(){m_modifier = effectInfo.PierceDamageReduction, m_type = HitData.DamageType.Pierce},
+            new HitData.DamageModPair(){m_modifier = effectInfo.ChopDamageReduction, m_type = HitData.DamageType.Chop}
         ];
+        
+        // Other
+        effect.m_addMaxCarryWeight = effectInfo.CarryWeightBonus;
 
         var customEffect = new CustomStatusEffect(effect, false);
         
