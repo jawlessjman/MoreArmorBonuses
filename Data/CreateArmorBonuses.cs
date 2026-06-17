@@ -1,4 +1,6 @@
-﻿using Jotunn.Entities;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Jotunn.Entities;
 using Jotunn.Utils;
 using UnityEngine;
 using Newtonsoft.Json;
@@ -156,18 +158,25 @@ public static class CreateArmorBonuses
         // Defense Related
         effect.m_damageReduction = effectInfo.DamageReduction;
         effect.m_addArmor= effectInfo.DefenseBonus;
-        effect.m_mods = [
-            new HitData.DamageModPair(){m_modifier = effectInfo.FireDamageReduction, m_type = HitData.DamageType.Fire},
-            new HitData.DamageModPair(){m_modifier = effectInfo.PoisonDamageReduction, m_type = HitData.DamageType.Poison},
-            new HitData.DamageModPair(){m_modifier = effectInfo.FrostDamageReduction, m_type = HitData.DamageType.Frost},
-            new HitData.DamageModPair(){m_modifier = effectInfo.LightningDamageReduction, m_type = HitData.DamageType.Lightning},
-            new HitData.DamageModPair(){m_modifier = effectInfo.SlashDamageReduction, m_type = HitData.DamageType.Slash},
-            new HitData.DamageModPair(){m_modifier = effectInfo.PickaxeDamageReduction, m_type = HitData.DamageType.Pickaxe},
-            new HitData.DamageModPair(){m_modifier = effectInfo.SpiritDamageReduction, m_type = HitData.DamageType.Spirit},
-            new HitData.DamageModPair(){m_modifier = effectInfo.BluntDamageReduction, m_type = HitData.DamageType.Blunt},
-            new HitData.DamageModPair(){m_modifier = effectInfo.PierceDamageReduction, m_type = HitData.DamageType.Pierce},
-            new HitData.DamageModPair(){m_modifier = effectInfo.ChopDamageReduction, m_type = HitData.DamageType.Chop}
-        ];
+        
+        // Add Damage Modifiers
+        var modifiers = new List<HitData.DamageModPair>
+        {
+            new() { m_modifier = effectInfo.FireDamageReduction, m_type = HitData.DamageType.Fire },
+            new() { m_modifier = effectInfo.PoisonDamageReduction, m_type = HitData.DamageType.Poison },
+            new() { m_modifier = effectInfo.FrostDamageReduction, m_type = HitData.DamageType.Frost },
+            new() { m_modifier = effectInfo.LightningDamageReduction, m_type = HitData.DamageType.Lightning },
+            new() { m_modifier = effectInfo.BluntDamageReduction, m_type = HitData.DamageType.Blunt },
+            new() { m_modifier = effectInfo.PierceDamageReduction, m_type = HitData.DamageType.Pierce },
+            new() { m_modifier = effectInfo.SlashDamageReduction, m_type = HitData.DamageType.Slash },
+            new() { m_modifier = effectInfo.ChopDamageReduction, m_type = HitData.DamageType.Chop },
+            new() { m_modifier = effectInfo.PickaxeDamageReduction, m_type = HitData.DamageType.Pickaxe },
+            new() { m_modifier = effectInfo.SpiritDamageReduction, m_type = HitData.DamageType.Spirit },
+        };
+
+        effect.m_mods = modifiers
+            .Where(x => x.m_modifier != HitData.DamageModifier.Normal)
+            .ToList();
         
         // Other
         effect.m_addMaxCarryWeight = effectInfo.CarryWeightBonus;
