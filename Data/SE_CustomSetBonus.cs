@@ -1,4 +1,5 @@
-﻿using UnityEngine.Serialization;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace MoreArmorBonuses.Data;
 
@@ -20,9 +21,8 @@ public class SE_CustomSetBonus : SE_Stats
     public override void OnDamaged(HitData hit, Character attacker)
     {
         base.OnDamaged(hit, attacker);
-        
-        Plugin.Logger.LogInfo($"Applying damage reduction of {1f - m_damageReduction}");
-
-        hit.ApplyModifier(1f - m_damageReduction);
+    
+        var multiplier = Mathf.Clamp01(1f - m_damageReduction);
+        hit.m_damage.Modify(multiplier);
     }
 }
